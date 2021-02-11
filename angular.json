@@ -52,6 +52,7 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css"
             ],
             "scripts": []
@@ -115,9 +116,13 @@
               "src/assets"
             ],
             "styles": [
+              "node_modules/bootstrap/dist/css/bootstrap.min.css",
               "src/styles.css"
             ],
-            "scripts": []
+            "scripts": [
+              "node_modules/jquery/dist/jquery.min.js",
+              "node_modules/bootstrap/dist/js/bootstrap.min.js"
+            ]
           }
         },
         "lint": {
@@ -148,5 +153,8 @@
       }
     }
   },
-  "defaultProject": "angular6project"
+  "defaultProject": "angular6project",
+  "cli": {
+    "analytics": "cd9d9f8f-6d60-4976-9a8e-67334d24c89c"
+  }
 }
