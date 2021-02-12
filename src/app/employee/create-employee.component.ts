@@ -21,6 +21,12 @@ export class CreateEmployeeComponent implements OnInit {
       'required': 'Email is required.',
       'emailDomain': 'Email domain should be king.com'
     },
+     'confirmEmail': {
+      'required': 'Confirm Email is required.'
+    },
+    'emailGroup': {
+      'emailMisMatch': 'Email and confirmEmail do not match.'
+    },
     'phone': {
       'required': 'Phone is required.'
     },
@@ -38,6 +44,8 @@ export class CreateEmployeeComponent implements OnInit {
   formErrors: any = {
     'fullname': '',
     'email': '',
+    'confirmEmail': '',
+    'emailGroup': '',
     'skillName': '',
     'experienceInYears': '',
     'proficiency': ''
@@ -61,7 +69,10 @@ export class CreateEmployeeComponent implements OnInit {
     // Using FormBuilder approach
     this.employeeForm = this.fb.group({
       fullname: ['', [Validators.required, Validators.minLength(2), Validators.maxLength(9)]],
-      email: ['', [Validators.required, CustomValidators.emailDomain('king.com')]],
+      emailGroup: this.fb.group({
+        email: ['', [Validators.required, CustomValidators.emailDomain('king.com')]],
+        confirmEmail: ['', Validators.required],
+      }, {validator: matchEmail}),
       contactPreference: ['email'],
       phone: [''],
       skills: this.fb.group({
@@ -100,12 +111,7 @@ export class CreateEmployeeComponent implements OnInit {
     //console.log(Object.keys(group.controls));
     Object.keys(group.controls).forEach((key: string) => {
         const abstractControl = group.get(key);
-        if(abstractControl instanceof FormGroup) {
-          // Used to recursively call the function so it handles nested formgroup
-          this.logValidationErrors(abstractControl);
-          //abstractControl?.disable;// if i call it here, it disables only the controls in the nested form
-        } else {
-          //console.log('key = ' + key + " Value = " + abstractControl?.value);
+         //console.log('key = ' + key + " Value = " + abstractControl?.value);
          // abstractControl?.disable; // when used  here it disables all the controls in the form
          this.formErrors[key] = ''; // clear existing errors
          if(abstractControl && !abstractControl.valid && (abstractControl.touched || abstractControl.dirty)) {
@@ -118,7 +124,12 @@ export class CreateEmployeeComponent implements OnInit {
              }
            }
          }
-        }
+
+        if(abstractControl instanceof FormGroup) {
+          // Used to recursively call the function so it handles nested formgroup
+          this.logValidationErrors(abstractControl);
+          //abstractControl?.disable;// if i call it here, it disables only the controls in the nested form
+        } 
     })
   }
 
@@ -150,3 +161,15 @@ export class CreateEmployeeComponent implements OnInit {
   }
 
 }
+
+function matchEmail(group: AbstractControl): {[key: string]: any} | null {
+     const emailControl = group.get('email'); 
+     const confirmEmailControl = group.get('confirmEmail');
+     
+     if(emailControl?.value === confirmEmailControl?.value || confirmEmailControl?.pristine) {
+       return null;
+     } else {
+       return {'emailMisMatch': true}
+     }
+}
+
