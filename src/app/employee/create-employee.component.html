@@ -104,62 +104,64 @@
 
       <!--Adding skills FormGroup-->
       <div class="well">
-        <div
-          formGroupName="skills"
-          [ngClass]="{ 'has-error': formErrors.skillName }"
-        >
-          <input
-            type="text"
-            id="skillName"
-            formControlName="skillName"
-            (blur)="logValidationErrors()"
-            placeholder="Name"
-            style="margin-right: 10px"
-          />
-          <span class="help-block" *ngIf="formErrors.skillName">
-            {{ formErrors.skillName }}
-          </span>
-
-          <input
-            type="text"
-            placeholder="Experience in years"
-            formControlName="experienceInYears"
-            (blur)="logValidationErrors()"
-          />
-          <span class="help-block" *ngIf="formErrors.experienceInYears">
-            {{ formErrors.experienceInYears }}
-          </span>
-
+        <div formArrayName="skills">
           <div
-            class="form-group"
-            [ngClass]="{ 'has-error': formErrors.proficiency }"
+            formGroupName="0"
+            [ngClass]="{ 'has-error': formErrors.skillName }"
           >
-            <label>Proficiency</label>
             <input
-              type="radio"
-              value="beginner"
-              formControlName="proficiency"
+              type="text"
+              id="skillName"
+              formControlName="skillName"
               (blur)="logValidationErrors()"
-              style="margin-left: 8px; margin-right: 4px"
-            />Beginner
+              placeholder="Name"
+              style="margin-right: 10px"
+            />
+            <span class="help-block" *ngIf="formErrors.skillName">
+              {{ formErrors.skillName }}
+            </span>
+
             <input
-              type="radio"
-              value="intermediate"
-              formControlName="proficiency"
+              type="text"
+              placeholder="Experience in years"
+              formControlName="experienceInYears"
               (blur)="logValidationErrors()"
-              style="margin-left: 8px; margin-right: 4px"
-            />intermediate
-            <input
-              type="radio"
-              value="advanced"
-              formControlName="proficiency"
-              (blur)="logValidationErrors()"
-              style="margin-left: 8px; margin-right: 4px"
-            />Advanced
+            />
+            <span class="help-block" *ngIf="formErrors.experienceInYears">
+              {{ formErrors.experienceInYears }}
+            </span>
+
+            <div
+              class="form-group"
+              [ngClass]="{ 'has-error': formErrors.proficiency }"
+            >
+              <label>Proficiency</label>
+              <input
+                type="radio"
+                value="beginner"
+                formControlName="proficiency"
+                (blur)="logValidationErrors()"
+                style="margin-left: 8px; margin-right: 4px"
+              />Beginner
+              <input
+                type="radio"
+                value="intermediate"
+                formControlName="proficiency"
+                (blur)="logValidationErrors()"
+                style="margin-left: 8px; margin-right: 4px"
+              />intermediate
+              <input
+                type="radio"
+                value="advanced"
+                formControlName="proficiency"
+                (blur)="logValidationErrors()"
+                style="margin-left: 8px; margin-right: 4px"
+              />Advanced
+            </div>
+            <span class="help-block" *ngIf="formErrors.proficiency">
+              {{ formErrors.proficiency }}
+            </span>
           </div>
-          <span class="help-block" *ngIf="formErrors.proficiency">
-            {{ formErrors.proficiency }}
-          </span>
         </div>
       </div>
     </div>

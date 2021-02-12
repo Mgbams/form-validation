@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl } from '@angular/forms';
+import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl, FormArray } from '@angular/forms';
 import {CustomValidators} from './../shared/custom.validators';
 
 @Component({
@@ -75,11 +75,14 @@ export class CreateEmployeeComponent implements OnInit {
       }, {validator: matchEmail}),
       contactPreference: ['email'],
       phone: [''],
-      skills: this.fb.group({
+     /*  skills: this.fb.group({
         skillName: ['', Validators.required],
         experienceInYears: ['', Validators.required],
         proficiency: ['', Validators.required]
-      })
+      }) */
+      skills: this.fb.array([
+        this.addSkillFormFroup()
+      ])
     });
 
     this.employeeForm.get("fullname")?.valueChanges.subscribe(
@@ -107,6 +110,14 @@ export class CreateEmployeeComponent implements OnInit {
     console.log(this.employeeForm.touched);
   }
 
+  addSkillFormFroup(): FormGroup {
+   return this.fb.group({
+        skillName: ['', Validators.required],
+        experienceInYears: ['', Validators.required],
+        proficiency: ['', Validators.required]
+    });
+  }
+
   logValidationErrors(group: FormGroup = this.employeeForm): void {
     //console.log(Object.keys(group.controls));
     Object.keys(group.controls).forEach((key: string) => {
@@ -130,12 +141,21 @@ export class CreateEmployeeComponent implements OnInit {
           this.logValidationErrors(abstractControl);
           //abstractControl?.disable;// if i call it here, it disables only the controls in the nested form
         } 
+
+        //Used to check for FormArray
+        if(abstractControl instanceof FormArray) {
+          for (const control of abstractControl.controls) {
+            if(control instanceof FormGroup) {
+               this.logValidationErrors(control);
+            }
+          }
+        } 
     })
   }
 
   onLoadDataClick(): void {
-    this.logValidationErrors(this.employeeForm);
-    console.log(this.formErrors);
+    // this.logValidationErrors(this.employeeForm);
+    // console.log(this.formErrors);
     /* this.employeeForm.setValue({
       fullname: "kingsley",
       email: "k@gmail.com",
@@ -145,6 +165,44 @@ export class CreateEmployeeComponent implements OnInit {
         proficiency: 'beginner'
       }
     }) */
+    // First formArray approach
+  /*   const formArray = new FormArray([
+      new FormControl('john', Validators.required),
+      new FormGroup({
+        country: new FormControl('', Validators.required)
+      }),
+      new FormArray([])
+    ]);
+
+    for (const controls of formArray.controls) {
+      if(controls instanceof FormControl) {
+        console.log('control is FormControl');
+      }
+       if(controls instanceof FormGroup) {
+        console.log('control is FormGroup');
+      }
+       if(controls instanceof FormArray) {
+        console.log('control is FormArray');
+      }
+    } */
+
+    // Second formArray approach: this will give output as array
+    const formArray1 = this.fb.array([
+      new FormControl('john', Validators.required),
+       new FormControl('IT', Validators.required),
+       new FormControl('', Validators.required),
+    ]);
+    //console.log(formArray1.value);
+    formArray1.push(new FormControl('Mary', Validators.required));
+    console.log(formArray1.at(3).value);
+    //console.log(formArray.length);
+
+    //Third formGroup approach: This will give output as object
+   /*  const formGroup = this.fb.group([
+      new FormControl('john', Validators.required),
+       new FormControl('IT', Validators.required),
+       new FormControl('', Validators.required),
+    ]); */
   }
 
   onContactPreferenceChange(selectedValue: string) {
