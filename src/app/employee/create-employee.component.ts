@@ -84,6 +84,7 @@ export class CreateEmployeeComponent implements OnInit {
         this.addSkillFormFroup()
       ])
     });
+    
 
     this.employeeForm.get("fullname")?.valueChanges.subscribe(
       (value: string) => {
@@ -108,6 +109,10 @@ export class CreateEmployeeComponent implements OnInit {
     console.log(this.employeeForm.controls.fullname.value);
     console.log(this.employeeForm.get('email')?.dirty);
     console.log(this.employeeForm.touched);
+  }
+
+  addSkillButtonClick(): void {
+    (<FormArray>this.employeeForm.get('skills')).push(this.addSkillFormFroup());
   }
 
   addSkillFormFroup(): FormGroup {
