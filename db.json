@@ -1,0 +1,61 @@
+{
+  "employees": [
+    {
+      "id": 1,
+      "fullname": "Mark",
+      "contactPreference": "email",
+      "email": "mark@gmail.com",
+      "phone": "9999890876",
+      "skills": [
+          {
+          "skillName": "C#",
+          "experienceInYears": 1,
+          "proficiency": "beginner"
+        },
+         {
+          "skillName": "Java",
+          "experienceInYears": 2,
+          "proficiency": "intermediate"
+        }
+      ]
+    },
+     {
+      "id": 1,
+      "fullname": "Sarah",
+      "contactPreference": "email",
+      "email": "sarah@gmail.com",
+      "phone": "5467890876",
+      "skills": [
+          {
+          "skillName": "Angular",
+          "experienceInYears": 2,
+          "proficiency": "intermediate"
+        },
+         {
+          "skillName": "Mysql",
+          "experienceInYears": 5,
+          "proficiency": "advanced"
+        }
+      ]
+    },
+     {
+      "id": 3,
+      "fullname": "John",
+      "contactPreference": "phone",
+      "email": "john@gmail.com",
+      "phone": "1237890876",
+      "skills": [
+          {
+          "skillName": "Php",
+          "experienceInYears": 4,
+          "proficiency": "advanced"
+        },
+         {
+          "skillName": "Css",
+          "experienceInYears": 5,
+          "proficiency": "intermediate"
+        }
+      ]
+    }
+  ]
+}

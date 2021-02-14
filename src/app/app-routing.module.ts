@@ -12,6 +12,10 @@ const routes: Routes = [
     'path': 'create', 
     component: CreateEmployeeComponent
   },
+  {
+    'path': 'edit/:id', 
+    component: CreateEmployeeComponent
+  },
   {'path': '', redirectTo:'/list', pathMatch: "full"}
 ]
 
