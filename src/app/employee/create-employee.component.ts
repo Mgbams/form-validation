@@ -112,6 +112,7 @@ export class CreateEmployeeComponent implements OnInit {
   }
 
   addSkillButtonClick(): void {
+    //console.log('yellow');
     (<FormArray>this.employeeForm.get('skills')).push(this.addSkillFormFroup());
   }
 
@@ -121,6 +122,10 @@ export class CreateEmployeeComponent implements OnInit {
         experienceInYears: ['', Validators.required],
         proficiency: ['', Validators.required]
     });
+  }
+
+  removeSkillButtonClick(skillGroupIndex: number): void {
+    (<FormArray>this.employeeForm.get('skills')).removeAt(skillGroupIndex);
   }
 
   logValidationErrors(group: FormGroup = this.employeeForm): void {

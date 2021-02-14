@@ -110,22 +110,32 @@
               type="button"
               class="btn btn-primary"
               (click)="addSkillButtonClick()"
+              [disabled]="employeeForm.get('skills').invalid"
             >
               Add Skill
             </button>
           </div>
         </div>
 
+        <!---let skill of employeeForm.controls.skills.value-->
         <div
           formArrayName="skills"
           *ngFor="
-            let skill of employeeForm.controls.skills.value;
+            let skill of employeeForm.get('skills').controls;
             let i = index
           "
         >
+          <ng-container *ngIf="i > 0">
+            <hr />
+          </ng-container>
+
           <div
             [formGroupName]="i"
-            [ngClass]="{ 'has-error': formErrors.skillName }"
+            [ngClass]="{
+              'has-error':
+                skill.controls.skillName.invalid &&
+                skill.controls.skillName.touched
+            }"
           >
             <label class="col-sm-2 control-label" [attr.for]="'skillName' + i"
               >Skill</label
@@ -135,18 +145,38 @@
                 type="text"
                 id="{{ 'skillName' + i }}"
                 formControlName="skillName"
-                (blur)="logValidationErrors()"
                 placeholder="Name"
                 style="margin-right: 10px"
               />
-              <span class="help-block" *ngIf="formErrors.skillName">
-                {{ formErrors.skillName }}
+              <span
+                class="help-block"
+                *ngIf="
+                  skill.controls.skillName.errors?.required &&
+                  skill.controls.skillName.touched
+                "
+              >
+                Skill name is required
               </span>
+            </div>
+
+            <div class="col-sm-6" *ngIf="employeeForm.get('skills').length > 1">
+              <button
+                type="button"
+                class="btn btn-danger btn-sm pull-right"
+                title="Delete skill"
+                (click)="removeSkillButtonClick(i)"
+              >
+                <span class="glyphicon glyphicon-remove"></span>
+              </button>
             </div>
 
             <div
               class="form-group"
-              [ngClass]="{ 'has-error': formErrors.experienceInYears }"
+              [ngClass]="{
+                'has-error':
+                  skill.controls.experienceInYears.invalid &&
+                  skill.controls.experienceInYears.touched
+              }"
             >
               <label
                 class="col-sm-2 control-label"
@@ -159,43 +189,55 @@
                   placeholder="Experience in years"
                   formControlName="experienceInYears"
                   [id]="'experienceInYears' + i"
-                  (blur)="logValidationErrors()"
                 />
               </div>
-              <span class="help-block" *ngIf="formErrors.experienceInYears">
-                {{ formErrors.experienceInYears }}
+              <span
+                class="help-block"
+                *ngIf="
+                  skill.controls.experienceInYears.errors?.required &&
+                  skill.controls.experienceInYears.touched
+                "
+              >
+                Experience is required
               </span>
             </div>
 
             <div
               class="form-group"
-              [ngClass]="{ 'has-error': formErrors.proficiency }"
+              [ngClass]="{
+                'has-error':
+                  skill.controls.proficiency.invalid &&
+                  skill.controls.proficiency.touched
+              }"
             >
               <label>Proficiency</label>
               <input
                 type="radio"
                 value="beginner"
                 formControlName="proficiency"
-                (blur)="logValidationErrors()"
                 style="margin-left: 8px; margin-right: 4px"
               />Beginner
               <input
                 type="radio"
                 value="intermediate"
                 formControlName="proficiency"
-                (blur)="logValidationErrors()"
                 style="margin-left: 8px; margin-right: 4px"
               />intermediate
               <input
                 type="radio"
                 value="advanced"
                 formControlName="proficiency"
-                (blur)="logValidationErrors()"
                 style="margin-left: 8px; margin-right: 4px"
               />Advanced
             </div>
-            <span class="help-block" *ngIf="formErrors.proficiency">
-              {{ formErrors.proficiency }}
+            <span
+              class="help-block"
+              *ngIf="
+                skill.controls.proficiency.errors?.required &&
+                skill.controls.experienceInYears.touched
+              "
+            >
+              proficiency is required
             </span>
           </div>
         </div>
