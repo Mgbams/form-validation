@@ -1,10 +1,10 @@
 import { ISkill } from "./ISkill";
 
 export interface IEmployee {
-    id: number;
+    id: null;
     fullname: string;
     email: string;
-    phone?: number;
+    phone?: null;
     contactPreference: string;
     skills: ISkill[];
 }

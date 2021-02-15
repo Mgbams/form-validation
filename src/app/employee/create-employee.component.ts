@@ -1,6 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { FormGroup, FormControl, FormBuilder, Validators, AbstractControl, FormArray } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import {CustomValidators} from './../shared/custom.validators';
  import { EmployeeService } from "./employee.service";
  import { IEmployee } from "./IEmployee";
@@ -12,9 +12,12 @@ import {CustomValidators} from './../shared/custom.validators';
   styleUrls: ['./create-employee.component.css']
 })
 export class CreateEmployeeComponent implements OnInit {
-  employeeForm!: FormGroup;
+  employeeForm: FormGroup;
   fullnameLength = 0;
-
+ // skills: FormArray;
+  employee!: IEmployee;
+  pageTitle: string = '';
+ 
   validationMessages: any = {
     'fullname': {
       'required': 'Full name is required.',
@@ -55,7 +58,10 @@ export class CreateEmployeeComponent implements OnInit {
     'proficiency': ''
   };
   
-  constructor(private fb: FormBuilder, private route: ActivatedRoute, private _employeeService: EmployeeService) { }
+  constructor(private fb: FormBuilder, 
+    private route: ActivatedRoute, private _employeeService: EmployeeService,
+    private _roter: Router
+    ) { }
 
   ngOnInit(): void {
     // Using the first ReactiveForm approach
@@ -88,8 +94,10 @@ export class CreateEmployeeComponent implements OnInit {
         this.addSkillFormFroup()
       ])
     });
+     
+    //this.skills = this.employeeForm.get('skills') as FormArray;
     
-
+    
     this.employeeForm.get("fullname")?.valueChanges.subscribe(
       (value: string) => {
         //console.log(value);
@@ -110,15 +118,33 @@ export class CreateEmployeeComponent implements OnInit {
       const empId = +params.get('id')!;
 
       if (empId) {
+        this.pageTitle = 'Edit Employee';
         this.getEmployee(empId);
+      } else {
+        this.pageTitle = 'Create Employee';
+        this.employee =  {
+          id: null,
+          fullname: '',
+          contactPreference: '',
+          email: '',
+          phone: null,
+          skills: []
+        };
       }
     })
 
   }
 
+ get skills() : FormArray {
+    return this.employeeForm.get("skills") as FormArray;
+  } 
+
   getEmployee(id: number) {
    this._employeeService.getEmployeeById(id).subscribe(
-     (employee: IEmployee) => this.editEmployee(employee),
+     (employee: IEmployee) => {
+       this.editEmployee(employee);
+       this.employee = employee
+      },
      (error: any) => console.log(error)
    )
   }
@@ -133,13 +159,49 @@ export class CreateEmployeeComponent implements OnInit {
       },
       phone: employee.phone
     });
+
+    this.employeeForm.setControl('skills', this.setExistingSkills(employee.skills));
+  }
+
+  setExistingSkills(skillSets: ISkill[]): FormArray {
+    //console.log(skillSets);
+    const formArray = new FormArray([]);
+    skillSets.forEach(s => {
+      formArray.push(this.fb.group({
+        skillName: s.skillName,
+        experienceInYears: s.experienceInYears,
+        proficiency: s.proficiency
+      }))
+    });
+    //console.log(formArray);
+    return formArray;
   }
 
   onSubmit(): void {
-    console.log(this.employeeForm.value);
+    /* console.log(this.employeeForm.value);
     console.log(this.employeeForm.controls.fullname.value);
     console.log(this.employeeForm.get('email')?.dirty);
-    console.log(this.employeeForm.touched);
+    console.log(this.employeeForm.touched); */
+    this.mapFormValuesToemployeeModel()
+    if(this.employee.id) {
+      this._employeeService.updateEmployee(this.employee).subscribe(
+        () => this._roter.navigate(['list']),
+        (error) => console.log(error)
+      );
+    } else {
+       this._employeeService.addEmployee(this.employee).subscribe(
+        () => this._roter.navigate(['list']),
+        (error) => console.log(error)
+      );
+    }
+  }
+
+  mapFormValuesToemployeeModel() {
+    this.employee.fullname          = this.employeeForm.value.fullname;
+    this.employee.contactPreference = this.employeeForm.value.contactPreference;
+    this.employee.email             = this.employeeForm.value.emailGroup.email;
+    this.employee.phone             = this.employeeForm.value.phone;
+    this.employee.skills            = this.employeeForm.value.skills;
   }
 
   addSkillButtonClick(): void {
@@ -156,7 +218,10 @@ export class CreateEmployeeComponent implements OnInit {
   }
 
   removeSkillButtonClick(skillGroupIndex: number): void {
-    (<FormArray>this.employeeForm.get('skills')).removeAt(skillGroupIndex);
+    const skillsFormArray = (<FormArray>this.employeeForm.get('skills'));
+    skillsFormArray.removeAt(skillGroupIndex);
+    skillsFormArray.markAllAsTouched();
+    skillsFormArray.markAsDirty();
   }
 
   logValidationErrors(group: FormGroup = this.employeeForm): void {

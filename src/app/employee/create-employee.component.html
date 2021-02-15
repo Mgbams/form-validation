@@ -5,7 +5,7 @@
 >
   <div class="panel panel-primary">
     <div class="panel-heading">
-      <h3 class="panel-title">Create Employee</h3>
+      <h3 class="panel-title">{{ pageTitle }}</h3>
     </div>
 
     <div class="panel-body">
@@ -110,7 +110,7 @@
               type="button"
               class="btn btn-primary"
               (click)="addSkillButtonClick()"
-              [disabled]="employeeForm.get('skills').invalid"
+              [disabled]="employeeForm.get('skills')?.invalid"
             >
               Add Skill
             </button>
@@ -120,10 +120,7 @@
         <!---let skill of employeeForm.controls.skills.value-->
         <div
           formArrayName="skills"
-          *ngFor="
-            let skill of employeeForm.get('skills').controls;
-            let i = index
-          "
+          *ngFor="let skill of skills.controls; let i = index"
         >
           <ng-container *ngIf="i > 0">
             <hr />
@@ -133,8 +130,8 @@
             [formGroupName]="i"
             [ngClass]="{
               'has-error':
-                skill.controls.skillName.invalid &&
-                skill.controls.skillName.touched
+                employeeForm.controls.skillName?.invalid &&
+                employeeForm.controls.skillName?.touched
             }"
           >
             <label class="col-sm-2 control-label" [attr.for]="'skillName' + i"
@@ -151,15 +148,18 @@
               <span
                 class="help-block"
                 *ngIf="
-                  skill.controls.skillName.errors?.required &&
-                  skill.controls.skillName.touched
+                  employeeForm.controls.skillName?.errors.required &&
+                  employeeForm.controls.skillName?.touched
                 "
               >
                 Skill name is required
               </span>
             </div>
 
-            <div class="col-sm-6" *ngIf="employeeForm.get('skills').length > 1">
+            <div
+              class="col-sm-6"
+              *ngIf="employeeForm.controls.skills.value.length > 1"
+            >
               <button
                 type="button"
                 class="btn btn-danger btn-sm pull-right"
@@ -174,8 +174,8 @@
               class="form-group"
               [ngClass]="{
                 'has-error':
-                  skill.controls.experienceInYears.invalid &&
-                  skill.controls.experienceInYears.touched
+                  employeeForm.controls.experienceInYears?.invalid &&
+                  employeeForm.controls.experienceInYears?.touched
               }"
             >
               <label
@@ -194,8 +194,8 @@
               <span
                 class="help-block"
                 *ngIf="
-                  skill.controls.experienceInYears.errors?.required &&
-                  skill.controls.experienceInYears.touched
+                  employeeForm.controls.experienceInYears?.errors.required &&
+                  employeeForm.controls.experienceInYears?.touched
                 "
               >
                 Experience is required
@@ -206,8 +206,8 @@
               class="form-group"
               [ngClass]="{
                 'has-error':
-                  skill.controls.proficiency.invalid &&
-                  skill.controls.proficiency.touched
+                  employeeForm.controls.proficiency?.invalid &&
+                  employeeForm.controls.proficiency?.touched
               }"
             >
               <label>Proficiency</label>
@@ -233,8 +233,8 @@
             <span
               class="help-block"
               *ngIf="
-                skill.controls.proficiency.errors?.required &&
-                skill.controls.experienceInYears.touched
+                employeeForm.controls.proficiency?.errors.required &&
+                employeeForm.controls.experienceInYears?.touched
               "
             >
               proficiency is required
