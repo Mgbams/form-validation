@@ -13,8 +13,7 @@ import {CustomValidators} from './../shared/custom.validators';
 })
 export class CreateEmployeeComponent implements OnInit {
   employeeForm: FormGroup;
-  fullnameLength = 0;
- // skills: FormArray;
+  //fullnameLength = 0;
   employee!: IEmployee;
   pageTitle: string = '';
  
@@ -94,14 +93,11 @@ export class CreateEmployeeComponent implements OnInit {
         this.addSkillFormFroup()
       ])
     });
-     
-    //this.skills = this.employeeForm.get('skills') as FormArray;
-    
-    
+         
     this.employeeForm.get("fullname")?.valueChanges.subscribe(
       (value: string) => {
         //console.log(value);
-        this.fullnameLength = value.length;
+        //this.fullnameLength = value.length;
       }
     );
 
@@ -185,12 +181,12 @@ export class CreateEmployeeComponent implements OnInit {
     this.mapFormValuesToemployeeModel()
     if(this.employee.id) {
       this._employeeService.updateEmployee(this.employee).subscribe(
-        () => this._roter.navigate(['list']),
+        () => this._roter.navigate(['employees']),
         (error) => console.log(error)
       );
     } else {
        this._employeeService.addEmployee(this.employee).subscribe(
-        () => this._roter.navigate(['list']),
+        () => this._roter.navigate(['employees']),
         (error) => console.log(error)
       );
     }
